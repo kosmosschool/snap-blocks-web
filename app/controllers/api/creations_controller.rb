@@ -1,5 +1,4 @@
-class Api::CreationsController < ApplicationController
-  skip_forgery_protection
+class Api::CreationsController < Api::ApiBaseController
 
   def index
     creations = Creation.all
@@ -8,10 +7,12 @@ class Api::CreationsController < ApplicationController
     
   end
 
+
   def show
     creation = Creation.find(params[:id]) 
     render json: creation_formatted(creation)
   end
+
 
   def create
     # check if user with device id already exists
@@ -47,6 +48,14 @@ class Api::CreationsController < ApplicationController
     render json: creation_formatted(creation)
   end
 
+
+  def destroy
+    deleted = Creation.destroy(params[:id])
+    
+    render json: {}, status: :ok
+  end
+
+  # helpers
   def creation_formatted(creation)
     {
       id: creation.id,
@@ -59,7 +68,9 @@ class Api::CreationsController < ApplicationController
 
   end
 
-  private 
+
+  private
+
     def creation_params
       params.require(:creation).permit(:title, :device_id,)
     end
